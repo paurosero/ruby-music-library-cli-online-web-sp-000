@@ -4,7 +4,6 @@ class MusicLibraryController
 
   def initialize(path = "./db/mp3s")
    MusicImporter.new(path).import
-   #binding.pry
   end
   
   def call
@@ -21,45 +20,53 @@ class MusicLibraryController
   end
   
   def list_songs
-    song_array = Song.all.sort {|a,b| a.name <=> b.name}
-    song_array.each.with_index(1) do |song, i| 
+    Song.all.sort {|a,b| a.name <=> b.name}.each.with_index(1) do |song, i| 
       puts "#{i}. #{song.artist.name} - #{song.name} - #{song.genre.name}"
     end
   end
   
   def list_artists
-    artist_array = Artist.all.sort {|a,b| a.name <=> b.name}
-    artist_array.each.with_index(1) do |artist, i| 
+    Artist.all.sort {|a,b| a.name <=> b.name}.each.with_index(1) do |artist, i| 
       puts "#{i}. #{artist.name}"
     end
   end
   
   def list_genres
-    genre_array = Genre.all.sort {|a,b| a.name <=> b.name}
-    genre_array.each.with_index(1) do |genre, i| 
+    Genre.all.sort {|a,b| a.name <=> b.name}.each.with_index(1) do |genre, i| 
       puts "#{i}. #{genre.name}"
     end
   end
   
   def list_songs_by_artist
-    song
-    
-    #puts "Please enter the name of an artist:"
-    #gets.strip
-    #song_name = Song.all.sort {|a,b| a.name <=> b.name}
-    #song_name.each.with_index(1) do |song, i|
-      #puts "#{i}. #{song.artist.name} - #{song.genre.name}"
-    #end
+    puts "Please enter the name of an artist:"
+    if artist = Artist.find_by_name(gets.strip)
+      artist.songs.sort {|a,b| a.name <=> b.name}.each.with_index(1) do |song, i|
+        puts "#{i}. #{song.name} - #{song.genre.name}"
+      end
+    end
   end
-  
-
   
   def list_songs_by_genre
-    
+    puts "Please enter the name of a genre:"
+    if genre = Genre.find_by_name(gets.strip)
+      genre.songs.sort {|a,b| a.name <=> b.name}.each.with_index(1) do |song, i|
+        puts "#{i}. #{song.artist.name} - #{song.name}"
+      end
+    end
   end
   
- # def
+ def play_song
+   puts "Which song number would you like to play?"
+   input = gets.strip.to_i
+   song_array = Song.all.sort {|a, b| a.name <=> b.name}
+   if (1..Song.all.length).include?(input)
+     song = song_array[input+2]
+     puts "Playing #{song.name} by #{song.artist.name}"
+   end
+ 
+ 
     
-  #end
-  
+   
+    
+    
 end
